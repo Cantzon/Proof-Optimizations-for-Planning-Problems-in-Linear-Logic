@@ -28,8 +28,8 @@ rule token = parse
   | "and"                    { AND }
   | "igoal"                  { GOAL }
   | word as w                { WORD(w) }
-  | word2 as w                 { WORD(v) }
-  | integer as i             { INTEGER(int_of_string i) }
+  | word2 as w                 { WORD(w) }
+  | integer as i             { INT(int_of_string i) }
 (*| filepath                 { FILEPATH } *)
   | eof                      { raise Eof }
   | _ as c      { Printf.printf "Unrecognized character: %c\n" c; raise (Failure "")}

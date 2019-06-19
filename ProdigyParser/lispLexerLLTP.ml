@@ -1013,7 +1013,7 @@ let
 # 1014 "lispLexerLLTP.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 31 "lispLexerLLTP.mll"
-                               ( WORD(v) )
+                               ( WORD(w) )
 # 1018 "lispLexerLLTP.ml"
 
   | 14 ->
@@ -1023,7 +1023,7 @@ let
 # 1024 "lispLexerLLTP.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 32 "lispLexerLLTP.mll"
-                             ( INTEGER(int_of_string i) )
+                             ( INT(int_of_string i) )
 # 1028 "lispLexerLLTP.ml"
 
   | 15 ->
