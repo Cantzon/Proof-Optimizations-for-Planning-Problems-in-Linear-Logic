@@ -5,7 +5,7 @@ exception Eof
 }
 
 
-let word = ['a'-'z']+['a'-'z' 'A'-'Z' '0'-'9' '_']*
+let word = ['a'-'z']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-']*
 let word2 = ['A'-'Z']+['a'-'z' 'A'-'Z' '0'-'9' '_']* 
  let integer = ['0'-'9']+
 (*let filepath = ''' [^''']* '''*)
@@ -27,9 +27,10 @@ rule token = parse
   | "state"                  { STATE }
   | "and"                    { AND }
   | "igoal"                  { GOAL }
+  | "goal"                   { GOAL }
   | word as w                { WORD(w) }
   | word2 as w                 { WORD(w) }
-  | integer as i             { INT(int_of_string i) }
+  | integer as i             { WORD(i) }
 (*| filepath                 { FILEPATH } *)
   | eof                      { raise Eof }
   | _ as c      { Printf.printf "Unrecognized character: %c\n" c; raise (Failure "")}

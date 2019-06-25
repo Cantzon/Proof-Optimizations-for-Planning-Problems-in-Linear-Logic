@@ -1,14 +1,15 @@
 
-%{ %}
+%{ 
 
+%}
 
 %token EOF
 %token SETF CURR_PROB CREATE_PROB NAME OBJECTS STATE AND GOAL
 %token LPAREN RPAREN
 %token <string> WORD
-%token <int> INT
-%start  main             /* the entry point */
-%type <string * string list * string list> main 
+%start main             /* the entry point */
+%type <string * string list list * string list list> main 
+
 %%
 
 main:
@@ -42,7 +43,8 @@ states1:
 
 
 goals:
-    LPAREN GOAL LPAREN AND goals1 RPAREN RPAREN           { $5 }
+    |LPAREN GOAL LPAREN AND goals1 RPAREN RPAREN           { $5 }
+    |LPAREN GOAL goals1 RPAREN                             { $3 }
 
 goals1: 
     | LPAREN words RPAREN                                 { [$2] }
@@ -51,9 +53,6 @@ goals1:
 
 words: 
     | WORD                                                  { [$1] }
-    | INT                                                   { [$1] }
     | WORD words                                            { $1 :: $2 }
-    | INT words                                             { $1 :: $2 }
-
 
 %%

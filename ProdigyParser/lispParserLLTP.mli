@@ -11,7 +11,6 @@ type token =
   | LPAREN
   | RPAREN
   | WORD of (string)
-  | INT of (int)
 
 val main :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> string * string list * string list
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> string * string list list * string list list
