@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DIR2="./main"
+countFiles=0
+countSuccesses=0
+flag=0
+arrayFailures=()
+
+for folder in prodigy-latest/working/domains/*/
+do
+	for file in "$folder"probs/*
+	do
+		((countFiles++))
+		if [[ $($DIR2< "$file") =~ fof.*$ ]]; then
+			echo "$file success"
+			((countSuccesses++))
+		else
+			arrayFailures+=("$file")
+		fi
+	done
+done
+
+echo "Total Files Tested: $countFiles"
+echo "Total Files That Succeeded: $countSuccesses"
+echo ""
+echo "Here are the files that failed: "
+printf '%s\n' ${arrayFailures[@]}
+echo ""
+succPercent=$(expr $countSuccesses \* 100 / $countFiles)
+echo "Success Percentage: $succPercent%"
