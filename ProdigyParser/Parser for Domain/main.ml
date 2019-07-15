@@ -1,7 +1,7 @@
 let _ =
       try
         let lexbuf = Lexing.from_channel stdin in
-        while true do
+        (*while true do*)
           let _ = Parsing.set_trace true in
 
           let parsedList = DomainParser.main DomainLexer.token lexbuf in
@@ -19,6 +19,7 @@ let _ =
               print_string res; print_newline(); flush stdout
           in
             List.iter print_string parsedList
-        done
+        (*done*)
       with DomainLexer.Eof ->
+        let _ = print_string "EOF END" in
         exit 0

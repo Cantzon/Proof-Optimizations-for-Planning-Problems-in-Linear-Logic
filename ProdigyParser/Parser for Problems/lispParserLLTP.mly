@@ -24,8 +24,11 @@ naming:
 
 obj: 
     LPAREN OBJECTS irrelevant RPAREN                       {}
+/* MAKE SURE TO ACCOUNT FOR THE CASES WITHOUT OBJECTS */
+
 
 irrelevant:
+	| {}
 	| LPAREN RPAREN										   {}
     | LPAREN words RPAREN                                  {}
     | LPAREN words RPAREN irrelevant                       {}

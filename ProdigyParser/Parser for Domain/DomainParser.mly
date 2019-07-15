@@ -5,7 +5,7 @@
 
 %token EOF
 %token SETF CURR_T CREATE_PROB OPERATOR 
-%token PARAMS PRECONDS EFF AND DELETE ADD CONTROL_RULE IF THEN
+%token PARAMS PRECONDS EFF AND DELETE ADD CONTROL_RULE IF THEN EOF
 %token LPAREN RPAREN
 %token <string> WORD
 %start main             /* the entry point */
@@ -24,7 +24,7 @@
 
 /* The 'main' used for testing control rules i.e. with test file junk2.lisp */
 main:
-	controlRule 											{ print_string "yeet";$1}
+	controlRule EOF											{ print_string "yeet";$1}
 
 
 /*-------------------------------------------*/
@@ -85,6 +85,7 @@ del_add:
 /*Intended return value: LIST OF (controlRuleName)*/
 
 controlRule:
+	| EOF 													{[]}
 	| LPAREN CONTROL_RULE WORD ifBranch thenBranch RPAREN	{ [$3]}
 	| LPAREN CONTROL_RULE WORD ifBranch thenBranch RPAREN controlRule {$3::$7}
 

@@ -2276,7 +2276,7 @@ let
 
   | 23 ->
 # 41 "DomainLexer.mll"
-                             ( raise Eof )
+                             ( EOF )
 # 2281 "DomainLexer.ml"
 
   | 24 ->

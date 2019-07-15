@@ -38,5 +38,5 @@ rule token = parse
   | word2 as w                 { WORD(w) }
   | integer as i             { WORD(i) }
 (*| filepath                 { FILEPATH } *)
-  | eof                      { raise Eof }
+  | eof                      { EOF }
   | _ as c      { Printf.printf "Unrecognized character: %c\n" c; raise (Failure "")}
