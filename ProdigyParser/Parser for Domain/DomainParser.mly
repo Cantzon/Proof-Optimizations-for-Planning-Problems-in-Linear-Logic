@@ -10,8 +10,8 @@ let parse_error s =
 %}
 
 %token EOF
-%token SETF CURR CREATE_PROB OPERATOR NODE GOAL BINDINGS SELECT REJECT PREFER SUBGOAL 
-%token PARAMS PRECONDS EFF AND DELETE ADD CONTROL_RULE IF THEN
+%token /*SETF CURR CREATE_PROB */OPERATOR /*NODE GOAL BINDINGS SELECT REJECT PREFER SUBGOAL*/ 
+%token PARAMS PRECONDS EFF AND DELETE ADD /* CONTROL_RULE IF THEN */
 %token LPAREN RPAREN DOT
 %token <string> WORD ID VAR
 %start main             /* the entry point */
@@ -31,9 +31,10 @@ let parse_error s =
 /* The 'main' used for testing control rules i.e. with test file junk2.lisp */
 main:
   | EOF              { [] }
-  | ops 			 { $1 }
-  | controlRule      { [] }
-  | controlRule main { [] }
+  | ops 			 { [$1] }
+  | irrelevant 		 { [] }  
+  | ops main		 { $1::$2 }
+  | irrelevant main	 { $2 }  
 
 
 /*-------------------------------------------*/
@@ -42,9 +43,9 @@ main:
 /*Intended return value: LIST OF (operatorName, preconditionsList, effectsList)*/
 ops:
   | LPAREN OPERATOR ID parameters
-    preconditions effects RPAREN      { [($3, $5, $6)] }
-  | LPAREN OPERATOR ID parameters 
-    preconditions effects RPAREN ops  { ($3, $5, $6)::$8 }
+    preconditions effects RPAREN      { ($3, $5, $6) }
+/*  | LPAREN OPERATOR ID parameters 
+    preconditions effects RPAREN ops  { ($3, $5, $6)::$8 } */
 
 parameters:
   | LPAREN PARAMS varList RPAREN {}
@@ -53,8 +54,14 @@ parameters:
 
 /*Intended return value: LIST OF preconditions*/
 preconditions: 
-  LPAREN PRECONDS LPAREN RPAREN 
+ | LPAREN PRECONDS LPAREN RPAREN 
   LPAREN AND propList RPAREN RPAREN  { $7 }
+ | LPAREN PRECONDS LPAREN RPAREN
+   propList RPAREN 					 { $5 }
+ | LPAREN PRECONDS LPAREN objList RPAREN
+   propList RPAREN 					{ $6 }
+ | LPAREN PRECONDS LPAREN objList RPAREN
+   LPAREN AND propList RPAREN RPAREN { $8 }
 
 /*Intended return value: LIST OF effects*/
 effects: 
@@ -73,6 +80,7 @@ del_add:
 /* DEFINING CONTROL RULE GRAMMAR */
 
 /*Intended return value: LIST OF (controlRuleName)*/
+/*
 controlRule:
   | LPAREN CONTROL_RULE ID ifBranch thenBranch RPAREN { }
 
@@ -97,6 +105,7 @@ candidate:
   | GOAL propList      {} 
   | OPERATOR ID        {}
   | BINDINGS bindsList {}
+*/
 
 /*-------------------------------------------*/
 /* Common entities */
@@ -128,5 +137,61 @@ binding:
 bindsList:
   | binding           { [$1] }
   | binding bindsList { $1::$2 }
+
+objList: 
+  | LPAREN VAR ID RPAREN				{}
+  | LPAREN VAR ID RPAREN objList		{}
+
+/*irrelevant: 
+  | LPAREN RPAREN					{}
+  | LPAREN words RPAREN				{}
+  | LPAREN words irrelevantList RPAREN	{}
+  | LPAREN words irrelevantList words RPAREN	{}
+  | LPAREN irrelevantList words RPAREN	{}
+  | LPAREN irrelevantList RPAREN		{}
+
+irrelevantList: 
+  | LPAREN RPAREN					{}
+  | LPAREN words RPAREN				{}
+  | LPAREN words irrelevant RPAREN	{}
+  | LPAREN words irrelevant words RPAREN	{}
+  | LPAREN irrelevant RPAREN		{}
+  | LPAREN irrelevant words RPAREN		{}
+  | LPAREN RPAREN	irrelevant				{}
+  | LPAREN words irrelevant words RPAREN irrelevant	{}
+  | LPAREN words RPAREN		irrelevant		{}
+  | LPAREN words irrelevant RPAREN irrelevant	{}
+  | LPAREN irrelevant RPAREN	irrelevant	{}
+  | LPAREN irrelevant words RPAREN	irrelevant	{}
+*/
+
+irrelevant:
+  | LPAREN irrelevantList RPAREN {}
+
+
+irrelevantList:
+  | words							{}
+  | LPAREN RPAREN					{}
+  | LPAREN words RPAREN				{}
+  | LPAREN irrelevantList RPAREN	{}
+  | words irrelevantList			{}
+  | LPAREN RPAREN irrelevantList	{}
+  | LPAREN words RPAREN	irrelevantList			{}
+  | LPAREN irrelevantList RPAREN irrelevantList	{}
+
+words: 
+  | WORD 			 {}
+  | ID               {}
+  | VAR  			 {}
+  | AND				 {}
+  | OPERATOR 		 {}
+  | DOT 			 {}
+  | WORD words		 {}
+  | ID   words       {}
+  | VAR  words   	 {}
+  | AND words 		 {}
+  | OPERATOR words   {}
+  | DOT words		 {}
+
 
 %%

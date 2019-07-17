@@ -9,22 +9,24 @@ let id = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_' '-']*
 (* Variables are enclosed in <> *)
 let var = '<'['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''']+'>'
 
-let word = ['a'-'z' '<' '>']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']*
+let word = ['a'-'z' '<' '>' ':' '~']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']*
 let word2 = ['A'-'Z']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']* 
  let integer = ['0'-'9']+
 (*let filepath = ''' [^''']* '''*)
 (*Comment starts with ;*)
 let comment = [';'][^'\n']*   
+(*let multilineComment = "/*"([^])*"*/"  *)
 
 rule token = parse
     [' ' '\t' '\r' '\n']     { token lexbuf }     (* skip blanks *)
   | comment as c             { token lexbuf}
+(*  | multilineComment as c    { token lexbuf} *)
   | "'"                      { token lexbuf}
   | '('                      { LPAREN }
   | ')'                      { RPAREN }
   | '.'                      { DOT }
-  | "create-problem-space"   { CREATE_PROB }
-  | ":current"               { CURR }
+(*  | "create-problem-space"   { CREATE_PROB }
+  | ":current"               { CURR } *)
   | "OPERATOR"               { OPERATOR }
   | "operator"               { OPERATOR }
   | "params"                 { PARAMS }
@@ -33,9 +35,9 @@ rule token = parse
   | "del"                    { DELETE }
   | "add"                    { ADD }
   | "and"                    { AND }
-  | "CONTROL-RULE"           { CONTROL_RULE }
+(*  | "CONTROL-RULE"           { CONTROL_RULE }
   | "control-rule"           { CONTROL_RULE }
-(*  | "defun"                  { DEFUN } *)
+  | "defun"                  { DEFUN } 
   | "if"                     { IF } 
   | "IF"                     { IF }
   | "then"                   { THEN } 
@@ -46,7 +48,7 @@ rule token = parse
   | "select"                 { SELECT }
   | "reject"                 { REJECT }
   | "prefer"                 { PREFER }
-  | "sub-goal"               { SUBGOAL }
+  | "sub-goal"               { SUBGOAL } *)
   | id as s                  { ID(s) }
   | var as v                 { VAR(v) }
   | word as w                { WORD(w) }
