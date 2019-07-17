@@ -10,3 +10,6 @@ DomainLexer.ml
 DomainParser.ml
 DomainParser.mli
 
+# Ignoring binary file
+main
+
