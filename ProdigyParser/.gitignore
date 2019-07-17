@@ -1,0 +1,4 @@
+# Ignore OCaml compilation files
+**/*.cmi
+**/*.cmo
+
