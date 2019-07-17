@@ -4,6 +4,10 @@ open DomainParser        (* The type token is defined in parser.mli *)
 exception Eof
 }
 
+(* id-name *)
+let id = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_' '-']*
+(* Variables are enclosed in <> *)
+let var = '<'['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''']+'>'
 
 let word = ['a'-'z' '<' '>']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']*
 let word2 = ['A'-'Z']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']* 
@@ -18,9 +22,11 @@ rule token = parse
   | "'"                      { token lexbuf}
   | '('                      { LPAREN }
   | ')'                      { RPAREN }
+  | '.'                      { DOT }
   | "create-problem-space"   { CREATE_PROB }
-  | ":current t"             { CURR_T}
+  | ":current"               { CURR }
   | "OPERATOR"               { OPERATOR }
+  | "operator"               { OPERATOR }
   | "params"                 { PARAMS }
   | "preconds"               { PRECONDS }
   | "effects"                { EFF }
@@ -33,9 +39,18 @@ rule token = parse
   | "if"                     { IF } 
   | "IF"                     { IF }
   | "then"                   { THEN } 
-  | "THEN"                   { THEN } 
+  | "THEN"                   { THEN }
+  | "node"                   { NODE }
+  | "goal"                   { GOAL }
+  | "bindings"               { BINDINGS }
+  | "select"                 { SELECT }
+  | "reject"                 { REJECT }
+  | "prefer"                 { PREFER }
+  | "sub-goal"               { SUBGOAL }
+  | id as s                  { ID(s) }
+  | var as v                 { VAR(v) }
   | word as w                { WORD(w) }
-  | word2 as w                 { WORD(w) }
+  | word2 as w               { WORD(w) }
   | integer as i             { WORD(i) }
 (*| filepath                 { FILEPATH } *)
   | eof                      { EOF }

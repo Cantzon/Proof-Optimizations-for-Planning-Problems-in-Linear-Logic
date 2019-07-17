@@ -1,9 +1,16 @@
 type token =
   | EOF
   | SETF
-  | CURR_T
+  | CURR
   | CREATE_PROB
   | OPERATOR
+  | NODE
+  | GOAL
+  | BINDINGS
+  | SELECT
+  | REJECT
+  | PREFER
+  | SUBGOAL
   | PARAMS
   | PRECONDS
   | EFF
@@ -15,7 +22,10 @@ type token =
   | THEN
   | LPAREN
   | RPAREN
+  | DOT
   | WORD of (string)
+  | ID of (string)
+  | VAR of (string)
 
 val main :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> string list
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> (string * (string * string list) list * (string * string list) list) list 

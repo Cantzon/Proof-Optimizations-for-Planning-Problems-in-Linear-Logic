@@ -13,8 +13,10 @@
 %%
 
 main:
-    LPAREN SETF LPAREN CURR_PROB RPAREN LPAREN CREATE_PROB
-    naming obj states goals RPAREN RPAREN           { ($8, $10, $11) }
+    |LPAREN SETF LPAREN CURR_PROB RPAREN LPAREN CREATE_PROB
+    naming obj states goals RPAREN RPAREN          		  { ($8, $10, $11) }
+   	|LPAREN SETF LPAREN CURR_PROB RPAREN LPAREN CREATE_PROB
+    naming states goals RPAREN RPAREN          			  { ($8, $9, $10) }
 
 /* -------------------------------------------------------- */
 naming:
