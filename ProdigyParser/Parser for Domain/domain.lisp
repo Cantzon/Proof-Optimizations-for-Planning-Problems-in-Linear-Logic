@@ -1,137 +1,454 @@
-;;; Classical Blocksworld domain
-;;; The control rules in this version are by Manuela, 10/94
+;;; C2 Tasks Taxonomy
 
-(create-problem-space 'blocksworld :current t)
+(create-problem-space 'c2-tasks :current t)
 
-(ptype-of OBJECT :top-type)
-
-(OPERATOR PICK-UP
-  (params <ob1>)
+;;(inference-rule enable-air-space-operations
+(OPERATOR enable-air-space-operations
+  (params)
   (preconds 
-   ((<ob1> OBJECT))
-   (and (clear <ob1>)
-	(on-table <ob1>)
-	(arm-empty)))
-  (effects 
-   () ; no vars need genenerated in effects list
-   ((del (on-table <ob1>))
-    (del (clear <ob1>))
-    (del (arm-empty))
-    (add (holding <ob1>)))))
-
-(OPERATOR PUT-DOWN
-  (params <ob>)
-  (preconds 
-   ((<ob> OBJECT))
-    (holding <ob>))
+   ()
+   (and (en1) (en2) (en3) (en4)))
   (effects 
    ()
-   ((del (holding <ob>))
-    (add (clear <ob>))
-    (add (arm-empty))
-    (add (on-table <ob>)))))
+   ((add (top-goal)))))
 
-(OPERATOR STACK
-  (params <ob> <underob>)
+(OPERATOR combat-ops
+  (params)
   (preconds 
-   ((<ob> Object)
-    (<underob> (and OBJECT (diff <ob> <underob>))))
-    (and (clear <underob>)
-	 (holding <ob>)))
+   ()
+   (and (g1) (g2) (g3)))
   (effects 
    ()
-   ((del (holding <ob>))
-    (del (clear <underob>))
-    (add (clear <ob> ))
-    (add (arm-empty))
-    (add (on <ob> <underob>)))))
+   ((add (en1)))))
 
-(OPERATOR UNSTACK
-  (params <ob> <underob>)
-  (preconds
-   ((<ob> Object)
-    (<underob> Object))
-   (and (on <ob> <underob>)
-	(clear <ob>)
-	(arm-empty)))
+(OPERATOR combat-service-ops
+  (params)
+  (preconds 
+   ()
+   (and (g1) (g2) (g3)))
   (effects 
    ()
-   ((del (on <ob> <underob>))
-    (del (clear <ob>))
-    (del (arm-empty))
-    (add (holding <ob>))
-    (add (clear <underob>)))))
+   ((add (en2)))))
 
-(CONTROL-RULE BUILD-TOWER-FROM-BOTTOM
-  (if (and (candidate-goal (on <x> <y>))
-	   (candidate-goal (on <y> <z>))
-	   (~ (above <z> <x>))))
-  (then select goal (on <y> <z>)))
+(OPERATOR combat-support-ops
+  (params)
+  (preconds 
+   ()
+   (and (g1) (g2) (g3)))
+  (effects 
+   ()
+   ((add (en3)))))
 
-(CONTROL-RULE BUILD-TOWER-FROM-BOTTOM-STATE
-  (if (and (candidate-goal (on <x> <y>))
-	   (other-candidate-goals)
-	   (true-in-state (on <y> <z>))))
-  (then reject goal (on <x> <y>)))
+(OPERATOR training-ops
+  (params)
+  (preconds 
+   ()
+   (and (g1) (g2) (g3)))
+  (effects 
+   ()
+   ((add (en4)))))
 
-(CONTROL-RULE ARM-EMPTY-FIRST
-  (if (and (candidate-goal (arm-empty))
-	   (true-in-state (holding <x>))))
-  (then select goal (arm-empty)))
+#|
+(operator link
+  (params)
+  (preconds 
+   ()
+   (and (g1) (g2) (g3)))
+  (effects 
+   ()
+   ((add (g333)))))
+|#
 
-(CONTROL-RULE SELECT-OP-UNSTACK-FOR-HOLDING
-  (if (and (current-goal (holding <x>))
-	   (true-in-state (on <x> <y>))))
-  (then select operator UNSTACK))
+;;(inference-rule assess-situation
+(OPERATOR assess-situation
+  (params)
+  (preconds 
+   ()
+   (and (a1) (a2) (a3) (a4)))
+  (effects 
+   () 
+   ((add (g1)))))
 
-(CONTROL-RULE SELECT-BINDINGS-UNSTACK-HOLDING
-  (if (and (current-goal (holding <x>))
-	   (current-ops (UNSTACK))
-	   (true-in-state (on <x> <y>))))
-  (then select bindings ((<ob> . <x>) (<underob> . <y>))))
+;;(inference-rule observe-events-intents
+(OPERATOR observe-events-intents
+  (params)
+  (preconds 
+   ()
+   (and (o1) (o2)))
+  (effects 
+   () 
+   ((add (a1)))))
 
-(CONTROL-RULE SELECT-OP-UNSTACK-FOR-CLEAR
-  (if (and (current-goal (clear <x>))
-	   (true-in-state (on <y> <x>))))
-  (then select operator UNSTACK))
+;;(inference-rule collect-universal-picture
+(OPERATOR collect-universal-picture
+  (params)
+  (preconds 
+   ()
+   (and (c1) (c2) (c3)))
+  (effects 
+   () 
+   ((add (o1)))))
 
-(CONTROL-RULE SELECT-BINDINGS-UNSTACK-CLEAR
-  (if (and (current-goal (clear <y>))
-	   (current-ops (UNSTACK))
-	   (true-in-state (on <x> <y>))))
-  (then select bindings ((<ob> . <x>) (<underob> . <y>))))
+(OPERATOR manage-sensors
+  (params)
+  (preconds 
+   ()
+   ;;(all-sensed))
+   (nothing))
+  (effects 
+   () 
+   ((add (c1)))))
 
-(CONTROL-RULE SELECT-OP-PICKUP-FOR-HOLDING
-  (if (and (current-goal (holding <ob>))
-	   (true-in-state (on-table <ob>))))
-  (then select operator PICK-UP))
+(OPERATOR retrieve-data
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (c2)))))
 
-(CONTROL-RULE SELECT-OP-PUTDOWN-FOR-CLEAR
-  (if (and (current-goal (clear <ob>))
-	   (true-in-state (holding <ob>))))
-  (then select operator PUT-DOWN))
+(OPERATOR create-common-information
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (c3)))))
 
-(CONTROL-RULE SELECT-OP-PUTDOWN-FOR-ARMEMPTY
-  (if (and (current-goal (arm-empty))
-	   (true-in-state (holding <ob>))))
-  (then select operator PUT-DOWN))
+;;(inference-rule provide-common-presentation
+(OPERATOR provide-common-presentation
+  (params)
+  (preconds 
+   ()
+   (p1))
+  (effects 
+   () 
+   ((add (o2)))))
 
-(CONTROL-RULE SELECT-BINDINGS-PUTDOWN
-  (if (and (current-ops (PUT-DOWN))
-	   (true-in-state (holding <x>))))
-  (then select bindings ((<OB> . <x>))))
+(OPERATOR fuse-all-source
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (p1)))))
 
-(defun diff (x y)
-  (not (eq x y)))
+;;(inference-rule assess-significance
+(OPERATOR assess-significance
+  (params)
+  (preconds 
+   ()
+   (and (as1) (as2)))
+  (effects 
+   () 
+   ((add (a2)))))
 
-(defun other-candidate-goals ()
-  (if (> (length (candidate-goals)) 1) t nil))
+(OPERATOR visualize-forces
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (as1)))))
 
-;;; assume x and y are bound
-(defun above (x y)
-  (and (not (eq x y))
-       (or (known (list 'on x y))
-	   (let ((x-support (known (list 'on x '<z>))))
-	     (and x-support
-		  (above (cdaar x-support) y))))))
+(OPERATOR analyze-options
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (as2)))))
 
+(OPERATOR decide-to-act
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (a3)))))
+
+;;(inference-rule communicate-intent
+(OPERATOR communicate-intent
+  (params)
+  (preconds 
+   ()
+   (and (co1) (co2)))
+  (effects 
+   () 
+   ((add (a4)))))
+
+(OPERATOR connect-players
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (co1)))))
+
+(OPERATOR deliver-required
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (co2)))))
+
+(OPERATOR plan-operations
+  (params)
+  (preconds 
+   ()
+   (and (pl1) (pl2) (pl3) (pl4)))
+  (effects 
+   () 
+   ((add (g2)))))
+
+(OPERATOR choose-coa
+  (params)
+  (preconds 
+   ()
+   (and (ch1) (ch2) (ch3) (ch4)))
+  (effects 
+   () 
+   ((add (pl1)))))
+
+(OPERATOR allocate-resources
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (pl2)))))
+
+
+(OPERATOR build-plan-and-schedule
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (pl3)))))
+
+(OPERATOR communicate-plan
+  (params)
+  (preconds 
+   ()
+   (and (com1) (com2)))
+  (effects 
+   () 
+   ((add (pl4)))))
+
+
+(OPERATOR connect-players-for-plan
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (com1)))))
+
+
+(OPERATOR deliver-required-for-plan
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (com2)))))
+
+
+(OPERATOR determine-objectives
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ch1)))))
+
+
+(OPERATOR develop-modify-strategy
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ch2)))))
+
+
+(OPERATOR visualize-forces-for-coa
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ch3)))))
+
+
+
+(OPERATOR analyze-options-for-coa
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ch4)))))
+
+
+(OPERATOR execute-ops
+  (params)
+  (preconds 
+   ()
+   (and (ex1) (ex2) (ex3) (ex4)))
+  (effects 
+   () 
+   ((add (g3)))))
+
+
+(OPERATOR implement-ops
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ex1)))))
+
+
+(OPERATOR comm-coor-direction
+  (params)
+  (preconds 
+   ()
+   (and (cc1) (cc2)))
+  (effects 
+   () 
+   ((add (ex2)))))
+
+
+(OPERATOR report-results
+  (params)
+  (preconds 
+   ()
+   (and (rr1) (rr2)))
+  (effects 
+   () 
+   ((add (ex3)))))
+
+
+(OPERATOR connect-players-for-report
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (rr1)))))
+
+(OPERATOR deliver-required-for-report
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (rr2)))))
+
+(OPERATOR connect-players-for-direction
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (cc1)))))
+
+(OPERATOR deliver-required-for-direction
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (cc2)))))
+
+(OPERATOR adapt-ops
+  (params)
+  (preconds 
+   ()
+   (and (ao1) (ao2) (ao3) (ao4)))
+  (effects 
+   () 
+   ((add (ex4)))))
+
+
+(OPERATOR monitor-ops
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ao1)))))
+
+
+(OPERATOR plan-adj-ops
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ao2)))))
+
+
+(OPERATOR direct-adj-ops
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ao3)))))
+  
+
+(OPERATOR report-results-ops
+  (params)
+  (preconds 
+   ()
+   (nothing))
+  (effects 
+   () 
+   ((add (ao4)))))
+
+#|
+(ptype-of SATELLITE :top-type)
+(ptype-of RECCE :top-type)
+
+(OPERATOR sense-all-sensors
+ (params)
+ (preconds
+  ((<sat> SATELLITE)
+   (<recce> RECCE))
+  (and (sensed <sat>)
+       (sensed <recce>)))
+ (effects
+  ()
+  ((add (all-sensed)))))
+|#
+
+(pset :linear t)
+(pset :depth-bound 5000)

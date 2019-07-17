@@ -471,27 +471,27 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'words) in
     Obj.repr(
 # 173 "DomainParser.mly"
-                ()
+                   ()
 # 476 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 174 "DomainParser.mly"
-                      ()
+                         ()
 # 482 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'words) in
     Obj.repr(
 # 175 "DomainParser.mly"
-                           ()
+                              ()
 # 489 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'irrelevantList) in
     Obj.repr(
 # 176 "DomainParser.mly"
-                                 ()
+                                    ()
 # 496 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->
@@ -499,14 +499,14 @@ let yyact = [|
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'irrelevantList) in
     Obj.repr(
 # 177 "DomainParser.mly"
-                           ()
+                              ()
 # 504 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'irrelevantList) in
     Obj.repr(
 # 178 "DomainParser.mly"
-                                 ()
+                                    ()
 # 511 "DomainParser.ml"
                : 'irrelevantList))
 ; (fun __caml_parser_env ->

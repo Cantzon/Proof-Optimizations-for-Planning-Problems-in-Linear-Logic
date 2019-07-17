@@ -15,12 +15,12 @@ let word2 = ['A'-'Z']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']*
 (*let filepath = ''' [^''']* '''*)
 (*Comment starts with ;*)
 let comment = [';'][^'\n']*   
-(*let multilineComment = "/*"([^])*"*/"  *)
+let multilineComment = "#|"_*"|#"  
 
 rule token = parse
     [' ' '\t' '\r' '\n']     { token lexbuf }     (* skip blanks *)
   | comment as c             { token lexbuf}
-(*  | multilineComment as c    { token lexbuf} *)
+  | multilineComment as c    { token lexbuf} 
   | "'"                      { token lexbuf}
   | '('                      { LPAREN }
   | ')'                      { RPAREN }

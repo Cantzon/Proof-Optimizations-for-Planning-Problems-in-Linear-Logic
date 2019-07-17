@@ -11,12 +11,15 @@ do
 	for file in "$folder"*
 	do
 		if [[ -f "$file" ]]; then
-			((countFiles++))
-			if [[ $($DIR2< "$file") =~ fof.*$ ]]; then
-				echo "$file success"
-				((countSuccesses++))
-			else
-				arrayFailures+=("$file")
+
+			if [[ basename "$file" =~ "domain.lisp" ]]; then
+				((countFiles++))
+				if [[ $($DIR2< "$file") =~ fof.*$ ]]; then
+					echo "$file success"
+					((countSuccesses++))
+				else
+					arrayFailures+=("$file")
+				fi
 			fi
 		
 		fi

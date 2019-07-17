@@ -170,12 +170,12 @@ irrelevant:
 
 
 irrelevantList:
-  | words							{}
-  | LPAREN RPAREN					{}
-  | LPAREN words RPAREN				{}
-  | LPAREN irrelevantList RPAREN	{}
-  | words irrelevantList			{}
-  | LPAREN RPAREN irrelevantList	{}
+  | words										{}
+  | LPAREN RPAREN								{}
+  | LPAREN words RPAREN							{}
+  | LPAREN irrelevantList RPAREN				{}
+  | words irrelevantList						{}
+  | LPAREN RPAREN irrelevantList				{}
   | LPAREN words RPAREN	irrelevantList			{}
   | LPAREN irrelevantList RPAREN irrelevantList	{}
 
