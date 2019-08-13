@@ -11,7 +11,7 @@ let parse_error s =
 
 %token EOF
 %token /*SETF CURR CREATE_PROB */OPERATOR /*NODE GOAL BINDINGS SELECT REJECT PREFER SUBGOAL*/ 
-%token PARAMS PRECONDS EFF AND DELETE ADD /* CONTROL_RULE IF THEN */
+%token PARAMS PRECONDS EFF AND OR DELETE ADD TILDE /* CONTROL_RULE IF THEN */
 %token LPAREN RPAREN DOT
 %token <string> WORD ID VAR
 %start main             /* the entry point */
@@ -34,7 +34,7 @@ main:
   | ops 			 { [$1] }
   | irrelevant 		 { [] }  
   | ops main		 { $1::$2 }
-  | irrelevant main	 { $2 }  
+  | irrelevant main	 { $2 } 
 
 
 /*-------------------------------------------*/
@@ -44,28 +44,27 @@ main:
 ops:
   | LPAREN OPERATOR ID parameters
     preconditions effects RPAREN      { ($3, $5, $6) }
-/*  | LPAREN OPERATOR ID parameters 
-    preconditions effects RPAREN ops  { ($3, $5, $6)::$8 } */
 
 parameters:
   | LPAREN PARAMS varList RPAREN {}
   | LPAREN PARAMS RPAREN         {}
 
 
-/*Intended return value: LIST OF preconditions*/
-preconditions: 
- | LPAREN PRECONDS LPAREN RPAREN 
-  LPAREN AND propList RPAREN RPAREN  { $7 }
- | LPAREN PRECONDS LPAREN RPAREN
-   propList RPAREN 					 { $5 }
- | LPAREN PRECONDS LPAREN objList RPAREN
-   propList RPAREN 					{ $6 }
- | LPAREN PRECONDS LPAREN objList RPAREN
-   LPAREN AND propList RPAREN RPAREN { $8 }
+/*--------------------------------*/
+/*--------------------------------*/
+/*MAKE CASE FOR "OR" in PRECONDITIONS*/
+/*--------------------------------*/
+/*--------------------------------*/
+preconditions:
+  | LPAREN PRECONDS irrelevant propList RPAREN 					{ $4 }
+  | LPAREN PRECONDS LPAREN irrelevant RPAREN propList RPAREN 		{ $6 }
+  | LPAREN PRECONDS irrelevant LPAREN AND propList RPAREN RPAREN	{ $6 }
+  | LPAREN PRECONDS LPAREN irrelevant RPAREN LPAREN AND propList RPAREN RPAREN	{ $8 }
 
 /*Intended return value: LIST OF effects*/
 effects: 
-  LPAREN EFF LPAREN RPAREN LPAREN del_add RPAREN RPAREN  { $6 }
+  | LPAREN EFF LPAREN RPAREN LPAREN del_add RPAREN RPAREN  { $6 }
+  | LPAREN EFF LPAREN varSpec RPAREN LPAREN del_add RPAREN RPAREN  { $7 }
 
 /*Intended return value: LIST OF effects*/
 /* EFFECT IS ONLY ADDED IF PRECEDED WITH AN "add" */
@@ -123,8 +122,13 @@ args:
   | VAR args  { $1::$2 }
 
 propList:
-  | LPAREN prop RPAREN          { [$2] }
-  | LPAREN prop RPAREN propList { $2::$4 }
+  | 												   { [] }
+  | LPAREN prop RPAREN          					   { [$2] }
+  | LPAREN prop RPAREN propList 					   { $2::$4 }
+  | LPAREN TILDE LPAREN prop RPAREN	RPAREN			   { let (a,b) = $4 in 
+  															[("~"^a, b)]}
+  | LPAREN TILDE LPAREN prop RPAREN RPAREN propList    { let (a,b) = $4 in 
+  															("~"^a, b)::$7}
 
 varList:
   | VAR         { [$1] }
@@ -141,6 +145,22 @@ bindsList:
 objList: 
   | LPAREN VAR ID RPAREN				{}
   | LPAREN VAR ID RPAREN objList		{}
+
+varDescriptor:
+  | ID 												{}
+  | LPAREN AND varDescriptor constraints RPAREN   {}
+  | LPAREN OR varDescriptor constraints RPAREN    {}
+  | LPAREN TILDE varDescriptor constraints RPAREN {}
+
+constraints:
+  | varDescriptor				{}
+  | LPAREN words RPAREN		{}
+
+ varSpec: 
+  | 										{}
+  | LPAREN RPAREN						    {}
+  | LPAREN VAR varDescriptor RPAREN		    {}
+  | LPAREN VAR varDescriptor RPAREN varSpec {}
 
 /*irrelevant: 
   | LPAREN RPAREN					{}
@@ -166,6 +186,7 @@ irrelevantList:
 */
 
 irrelevant:
+  | LPAREN RPAREN	             {}
   | LPAREN irrelevantList RPAREN {}
 
 
@@ -184,14 +205,28 @@ words:
   | ID               {}
   | VAR  			 {}
   | AND				 {}
+  | OR 				 {}
   | OPERATOR 		 {}
+  | PARAMS 			 {}
+  | PRECONDS 		 {}
+  | EFF 			 {}
+  | ADD 			 {}
+  | DELETE		     {}
   | DOT 			 {}
+  | TILDE 			 {}
   | WORD words		 {}
   | ID   words       {}
   | VAR  words   	 {}
   | AND words 		 {}
   | OPERATOR words   {}
   | DOT words		 {}
+  | TILDE words      {}
+  | OR words         {}
+  | PARAMS words 			 {}
+  | PRECONDS words		 {}
+  | EFF words			 {}
+  | ADD words			 {}
+  | DELETE words			 {}
 
 
 %%

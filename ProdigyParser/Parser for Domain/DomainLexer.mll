@@ -5,12 +5,12 @@ exception Eof
 }
 
 (* id-name *)
-let id = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_' '-']*
+let id = ['a'-'z' 'A'-'Z' '0'-'9']['a'-'z' 'A'-'Z' '0'-'9' '_' '-' '/']*
 (* Variables are enclosed in <> *)
 let var = '<'['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''']+'>'
 
-let word = ['a'-'z' '<' '>' ':' '~']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']*
-let word2 = ['A'-'Z']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']* 
+let word = ['a'-'z' '<' '>' ':' '~' '*' '"' '`']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>' ':']*
+let word2 = ['A'-'Z' '0'-'9' '#']+['a'-'z' 'A'-'Z' '0'-'9' '_' '-' ''' '<' '>']* 
  let integer = ['0'-'9']+
 (*let filepath = ''' [^''']* '''*)
 (*Comment starts with ;*)
@@ -29,12 +29,22 @@ rule token = parse
   | ":current"               { CURR } *)
   | "OPERATOR"               { OPERATOR }
   | "operator"               { OPERATOR }
+  | "Operator"               { OPERATOR }
   | "params"                 { PARAMS }
+  | "PARAMS"                 { PARAMS }
   | "preconds"               { PRECONDS }
+  | "PRECONDS"               { PRECONDS }
   | "effects"                { EFF }
+  | "EFFECTS"                { EFF }
   | "del"                    { DELETE }
+  | "DEL"                    { DELETE }
   | "add"                    { ADD }
+  | "ADD"                    { ADD }
   | "and"                    { AND }
+  | "AND"                    { AND }
+  | "or"                     { OR  }
+  | "OR"                     { OR  }
+  | "~"                      { TILDE }
 (*  | "CONTROL-RULE"           { CONTROL_RULE }
   | "control-rule"           { CONTROL_RULE }
   | "defun"                  { DEFUN } 

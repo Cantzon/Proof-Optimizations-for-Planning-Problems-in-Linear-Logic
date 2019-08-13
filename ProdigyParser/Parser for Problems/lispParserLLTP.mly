@@ -4,7 +4,7 @@
 %}
 
 %token EOF
-%token SETF CURR_PROB CREATE_PROB NAME OBJECTS STATE AND OR GOAL
+%token SETF CURR_PROB CREATE_PROB NAME OBJECTS STATE AND OR GOAL TILDE
 %token LPAREN RPAREN
 %token <string> WORD
 %start main             /* the entry point */
@@ -53,6 +53,7 @@ goals:
     |LPAREN GOAL LPAREN AND goals1 RPAREN RPAREN           { $5 }
     |LPAREN GOAL LPAREN OR goals1 RPAREN RPAREN			   { $5 }
     |LPAREN GOAL goals1 RPAREN                             { $3 }
+    |LPAREN GOAL LPAREN goals1 RPAREN RPAREN 			   { $4 }
     |LPAREN GOAL LPAREN irrelevant RPAREN
      LPAREN AND goals1 RPAREN RPAREN					   { $8 }
     |LPAREN GOAL LPAREN irrelevant RPAREN
@@ -64,13 +65,17 @@ goals:
     |LPAREN GOAL LPAREN RPAREN
      LPAREN AND goals1 RPAREN RPAREN					   { $7 }
     |LPAREN GOAL LPAREN RPAREN
-     LPAREN OR goals1 RPAREN RPAREN					   { $7 }
+     LPAREN OR goals1 RPAREN RPAREN					   	   { $7 }
 
 
 goals1: 
 	| LPAREN RPAREN											{[]}
     | LPAREN words RPAREN                                 { [$2] }
     | LPAREN words RPAREN  goals1                         { $2::$4 }
+    | TILDE LPAREN words RPAREN								{ ["~"::$3] }
+    | TILDE LPAREN words RPAREN	goals1						{ ("~"::$3)::$5 }
+    | LPAREN TILDE LPAREN words RPAREN RPAREN				{ ["~"::$4] }
+    | LPAREN TILDE LPAREN words RPAREN RPAREN goals1		{ ("~"::$4)::$7 }
 
 
 

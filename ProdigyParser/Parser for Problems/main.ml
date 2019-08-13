@@ -2,7 +2,7 @@ let _ =
       try
         let lexbuf = Lexing.from_channel stdin in
         while true do
-          let _ = Parsing.set_trace true in
+          (*let _ = Parsing.set_trace true in*)
           let (name, states, goals) = LispParserLLTP.main LispLexerLLTP.token lexbuf in
           let parens s = "(" ^ s ^ ")" in 
           let states1 = List.map (String.concat " ") states in
