@@ -19,16 +19,8 @@ let parse_error s =
 /*Following type is for the list of operators */
 %type <(string * (string * string list) list * (string * string list) list) list > main 
 
-/* Following type is for the list of names of control rules */
-/*%type <(string list> main*/
-
 %%
 
-/* The 'main' used for testing operators i.e. with test file junk1.lisp */
-/*main:
-    LPAREN CREATE_PROB ID CURR ID RPAREN ops                           { $7 } */
-
-/* The 'main' used for testing control rules i.e. with test file junk2.lisp */
 main:
   | EOF              { [] }
   | ops 			 { [$1] }
@@ -49,12 +41,6 @@ parameters:
   | LPAREN PARAMS varList RPAREN {}
   | LPAREN PARAMS RPAREN         {}
 
-
-/*--------------------------------*/
-/*--------------------------------*/
-/*MAKE CASE FOR "OR" in PRECONDITIONS*/
-/*--------------------------------*/
-/*--------------------------------*/
 preconditions:
   | LPAREN PRECONDS irrelevant propList RPAREN 					{ $4 }
   | LPAREN PRECONDS LPAREN irrelevant RPAREN propList RPAREN 		{ $6 }
@@ -162,28 +148,8 @@ constraints:
   | LPAREN VAR varDescriptor RPAREN		    {}
   | LPAREN VAR varDescriptor RPAREN varSpec {}
 
-/*irrelevant: 
-  | LPAREN RPAREN					{}
-  | LPAREN words RPAREN				{}
-  | LPAREN words irrelevantList RPAREN	{}
-  | LPAREN words irrelevantList words RPAREN	{}
-  | LPAREN irrelevantList words RPAREN	{}
-  | LPAREN irrelevantList RPAREN		{}
 
-irrelevantList: 
-  | LPAREN RPAREN					{}
-  | LPAREN words RPAREN				{}
-  | LPAREN words irrelevant RPAREN	{}
-  | LPAREN words irrelevant words RPAREN	{}
-  | LPAREN irrelevant RPAREN		{}
-  | LPAREN irrelevant words RPAREN		{}
-  | LPAREN RPAREN	irrelevant				{}
-  | LPAREN words irrelevant words RPAREN irrelevant	{}
-  | LPAREN words RPAREN		irrelevant		{}
-  | LPAREN words irrelevant RPAREN irrelevant	{}
-  | LPAREN irrelevant RPAREN	irrelevant	{}
-  | LPAREN irrelevant words RPAREN	irrelevant	{}
-*/
+/*-----------------------------------------------------*/
 
 irrelevant:
   | LPAREN RPAREN	             {}
